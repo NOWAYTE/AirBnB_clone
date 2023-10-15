@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ Module containing BaseModel class """
+from models.engine.file_storage import storage
 
 
 import uuid
