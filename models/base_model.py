@@ -6,8 +6,18 @@ from datetime import datetime
 
 class BaseModel:
     """Base class Model """
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Initialization"""
+        if (kwargs):
+                for key, value in kwargs.items():
+                    if key == "created_at" and isinstance(key, str):
+                        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                    if key == "updated_at" and isinstance(key, str):
+                        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+
+                    if key != "__class__":
+                        setattr(self, key, value)
+
         self.id = uuid.uuid4()
         self.created_at = datetime.now()
         self.updated_at = self.created_at
