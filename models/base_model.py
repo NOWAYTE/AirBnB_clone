@@ -2,7 +2,8 @@
 """Defines a base model"""
 
 import uuid
-from datetime import datetime 
+from datetime import datetime
+from engine import FileStorage
 
 class BaseModel:
     """Base class Model """
@@ -21,6 +22,7 @@ class BaseModel:
         self.id = uuid.uuid4()
         self.created_at = datetime.now()
         self.updated_at = self.created_at
+        storage.new()
 
     def __str__(self):
         """Print format"""
@@ -29,6 +31,7 @@ class BaseModel:
     def save(self):
         """Update the updated_at public instance attr"""
         updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Return a dictionary"""
