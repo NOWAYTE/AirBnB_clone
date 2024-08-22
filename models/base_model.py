@@ -3,7 +3,7 @@
 
 import uuid
 from datetime import datetime
-from engine import FileStorage
+import models
 
 class BaseModel:
     """Base class Model """
@@ -19,10 +19,10 @@ class BaseModel:
                     if key != "__class__":
                         setattr(self, key, value)
 
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.created_at = datetime.now()
         self.updated_at = self.created_at
-        storage.new()
+        models.storage.new(self)
 
     def __str__(self):
         """Print format"""
@@ -31,7 +31,7 @@ class BaseModel:
     def save(self):
         """Update the updated_at public instance attr"""
         updated_at = datetime.now()
-        storage.save()
+        models.storage.save()
 
     def to_dict(self):
         """Return a dictionary"""

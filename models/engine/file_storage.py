@@ -26,7 +26,7 @@ class FileStorage:
         """Serializes the JSON to file"""
         json_objects = {}
 
-        for key in self.__objects:
+        for key, obj in self.__objects.items():
             json_objects[key] =  obj.to_dict()
 
         with open(self.__file_path, "w") as file:
