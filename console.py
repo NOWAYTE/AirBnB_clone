@@ -23,6 +23,11 @@ class HBNBCommand(cmd.Cmd):
 
         return True
 
+    def emptyline(self):
+        """Disable repeating the last command"""
+
+        return None
+
 
 if __name__ == "__main__":
     """"""
