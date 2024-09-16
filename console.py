@@ -8,7 +8,7 @@ class HBNBCommand(cmd.Cmd):
     """Command line intrepreter"""
 
     intro = "Welcome to my AirBnB console, Type help or ? to list commands \n"
-    prompt = '(HBNB)'
+    prompt = '(hbnb)'
     file = None
 
     def do_EOF(self, line):
