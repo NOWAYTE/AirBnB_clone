@@ -16,11 +16,6 @@ class HBNBCommand(cmd.Cmd):
 
         return True
 
-    def postcmd(self, stop, line):
-        """Clean up after exiting"""
-
-        return stop
-
     def do_quit(self, line):
         """Quit the command line intrepreter"""
 
