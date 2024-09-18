@@ -43,7 +43,7 @@ class FileStorage:
                     for key, value in obj_dict.items():
                         class_name, obj_id =  key.split(".")
                         cls = globals()[class_name]
-                        self.__objects[key] = cls(**values)
+                        self.__objects[key] = cls(**value)
 
             except:
                 pass

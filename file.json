@@ -1,10 +1,8 @@
 {
-    "BaseModel.ec2c352d-5908-4efc-902c-5c2986a7b73d": {
-        "id": "ec2c352d-5908-4efc-902c-5c2986a7b73d",
-        "created_at": "2024-08-22T05:46:02.553888",
-        "updated_at": "2024-08-22T05:46:02.553888",
-        "name": "My_First_Model",
-        "my_number": 89,
+    "BaseModel.fb9ddaea-d922-4dd0-814e-b561d99d6529": {
+        "id": "fb9ddaea-d922-4dd0-814e-b561d99d6529",
+        "created_at": "2024-09-18T15:52:09.874823",
+        "updated_at": "2024-09-18T15:52:09.874823",
         "__class__": "BaseModel"
     }
 }
