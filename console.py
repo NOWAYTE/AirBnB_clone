@@ -1,40 +1,38 @@
-#!/usr/bin/python3
+# console.py
 
-"""Command line interpreter"""
 import cmd
-from models.base_model import BaseModel
+from models.user import User  # Import the User class
 from models import storage
 
-
 class HBNBCommand(cmd.Cmd):
-    """Command line interpreter"""
-
     prompt = '(hbnb)'
-    file = None
 
     def do_create(self, name):
-        """Create a new instance of BaseModel class"""
+        """Create a new instance of BaseModel or User class"""
         if not name:
             print("** class name missing **")
             return
 
-        if name != "BaseModel":
+        if name not in storage.classes:
             print(f"** class {name} doesn't exist **")
             return
 
-        instance = BaseModel()
+        if name == "User":
+            instance = User()
+        else:
+            instance = BaseModel()
+
         instance.save()
         print("{}".format(instance.id))
 
     def do_show(self, arg):
-        """Prints string representation of instance"""
+        """Prints string representation of an instance based on class name and ID"""
         args = arg.split()
-
         if len(args) == 0:
             print("** class name is missing **")
             return
-
-        if args[0] != "BaseModel":
+        
+        if args[0] not in storage.classes:
             print("** class doesn't exist **")
             return
 
@@ -42,10 +40,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        class_name = args[0]
-        class_id = args[1]
-
-        key = f"{class_name}.{class_id}"
+        key = f"{args[0]}.{args[1]}"
         objects = storage.all()
 
         if key in objects:
@@ -56,30 +51,25 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, arg):
         """Deletes an instance based on class name and ID"""
         args = arg.split()
-
         if len(args) == 0:
             print("** class name is missing **")
             return
 
-        if args[0] != "BaseModel":
-            print(f"** class name doesn't exist **")
+        if args[0] not in storage.classes:
+            print("** class name doesn't exist **")
             return
-
 
         if len(args) < 2:
             print("** instance id missing **")
             return
 
-        class_name = args[0]
-        class_id = args[1]
-
-        key = f"{class_name}.{class_id}"
+        key = f"{args[0]}.{args[1]}"
         objects = storage.all()
 
         if key in objects:
             del objects[key]
             storage.save()
-            print(f"Instance {class_name}.{class_id} deleted")
+            print(f"Instance {key} deleted")
         else:
             print("** no instance found **")
 
@@ -87,7 +77,7 @@ class HBNBCommand(cmd.Cmd):
         """Prints all string representations of all instances or by class"""
         objects = storage.all()
 
-        if class_name and class_name != "BaseModel":
+        if class_name and class_name not in storage.classes:
             print("** class doesn't exist **")
             return
 
@@ -105,9 +95,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        class_name = args[0]
-
-        if class_name != "BaseModel":
+        if args[0] not in storage.classes:
             print("** class doesn't exist **")
             return
 
@@ -115,8 +103,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        instance_id = args[1]
-        key = f"{class_name}.{instance_id}"
+        key = f"{args[0]}.{args[1]}"
         objects = storage.all()
 
         if key not in objects:
@@ -173,3 +160,4 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+
