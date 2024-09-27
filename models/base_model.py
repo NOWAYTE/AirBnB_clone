@@ -1,44 +1,41 @@
 #!/usr/bin/python3
-"""Defines a base model"""
 
-import uuid
+from uuid import uuid4
 from datetime import datetime
-import models
 
 class BaseModel:
-    """Base class Model """
     def __init__(self, *args, **kwargs):
-        """Initialization"""
-        if (kwargs):
-                for key, value in kwargs.items():
-                    if key == "created_at" and isinstance(key, str):
-                        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-                    if key == "updated_at" and isinstance(key, str):
-                        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+        """Initialization method for BaseModel."""
+        if kwargs:
+            # Initialize object from deserialized data
+            for key, value in kwargs.items():
+                if key not in ('__class__', 'created_at', 'updated_at'):
+                    setattr(self, key, value)
+            self.created_at = datetime.strptime(kwargs['created_at'], "%Y-%m-%dT%H:%M:%S.%f")
+            self.updated_at = datetime.strptime(kwargs['updated_at'], "%Y-%m-%dT%H:%M:%S.%f")
+        else:
+            # Create a new instance
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
-                    if key != "__class__":
-                        setattr(self, key, value)
-
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
-        models.storage.new(self)
-
-    def __str__(self):
-        """Print format"""
-        return "[{}] ({}) {}".format(BaseModel.__name__, self.id, self.__dict__)
+            # Avoid circular import by doing this import locally
+            from models import storage
+            storage.new(self)
 
     def save(self):
-        """Update the updated_at public instance attr"""
-        updated_at = datetime.now()
-        models.storage.save()
+        """Updates updated_at and saves instance to storage."""
+        self.updated_at = datetime.now()
+
+        # Avoid circular import by importing storage locally
+        from models import storage
+        storage.save()
 
     def to_dict(self):
-        """Return a dictionary"""
-        obj_dict =  self.__dict__.copy()
-        obj_dict["__class__"] = BaseModel.__name__
-        obj_dict["created_at"] = self.created_at.isoformat()
-        obj_dict["updated_at"] = self.updated_at.isoformat()
+        """Returns dictionary representation of an instance."""
+        dictionary = self.__dict__.copy()
+        dictionary["__class__"] = self.__class__.__name__
+        dictionary["created_at"] = self.created_at.isoformat()
+        dictionary["updated_at"] = self.updated_at.isoformat()
+        return dictionary
 
-
-        return obj_dict
