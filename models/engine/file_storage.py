@@ -1,49 +1,53 @@
 #!/usr/bin/python3
-"""Represents the File storage class"""
 
 import json
-import os
 from models.base_model import BaseModel
-
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 class FileStorage:
-    """FileStorage class"""
-    __file_path = "file.json"
+    """Serializes instances to a JSON file and deserializes JSON file to instances."""
+
+    __file_path = 'file.json'
     __objects = {}
 
     def all(self):
-        """Returns the dictionary"""
-
+        """Returns the dictionary __objects."""
         return self.__objects
 
     def new(self, obj):
-        """Sets obj key """
+        """Adds a new object to the __objects dictionary."""
         key = f"{obj.__class__.__name__}.{obj.id}"
-
         self.__objects[key] = obj
 
     def save(self):
-        """Serializes the JSON to file"""
-        json_objects = {}
+        """Saves the __objects dictionary to a JSON file."""
+        with open(self.__file_path, 'w') as f:
+            json.dump(self.all_dict(), f)
 
-        for key, obj in self.__objects.items():
-            json_objects[key] =  obj.to_dict()
-
-        with open(self.__file_path, "w") as file:
-            json.dump(json_objects, file, indent=4)
-
+    def all_dict(self):
+        """Returns the dictionary representation of __objects."""
+        return {k: v.to_dict() for k, v in self.__objects.items()}
 
     def reload(self):
-        """Deserializes JSON file """
-        if os.path.exists(self.__file_path):
-            try:
-                with open(self.__file_path, "r") as file:
-                    obj_dict = json.loads(file)
+        """Loads the JSON file and creates instances based on the data."""
+        try:
+            with open(self.__file_path, 'r') as f:
+                objs = json.load(f)
+            for key, val in objs.items():
+                class_name = val['__class__']
+                self.new(eval(class_name)(**val))  # Create an instance using ** unpacking
+        except FileNotFoundError:
+            pass
 
-                    for key, value in obj_dict.items():
-                        class_name, obj_id =  key.split(".")
-                        cls = globals()[class_name]
-                        self.__objects[key] = cls(**value)
+    def delete(self, obj=None):
+        """Deletes an object from the __objects dictionary."""
+        if obj:
+            key = f"{obj.__class__.__name__}.{obj.id}"
+            if key in self.__objects:
+                del self.__objects[key]
 
-            except:
-                pass
